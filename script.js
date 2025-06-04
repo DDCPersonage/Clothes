@@ -1,4 +1,26 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // === Dark Mode Theme Switcher ===
+    const switcher = document.getElementById('themeSwitcher');
+    const body = document.body;
+
+    // Load saved theme
+    if (localStorage.getItem('theme') === 'dark') {
+        if (switcher) switcher.checked = true;
+        body.classList.add('dark-mode');
+    }
+
+    // Toggle theme on switch change
+    switcher?.addEventListener('change', () => {
+        if (switcher.checked) {
+            body.classList.add('dark-mode');
+            localStorage.setItem('theme', 'dark');
+        } else {
+            body.classList.remove('dark-mode');
+            localStorage.setItem('theme', 'light');
+        }
+    });
+
+    // === Existing Cart & Other Logic ===
     let cart = JSON.parse(localStorage.getItem('clothinDistrictCart')) || [];
 
     const cartCountSpan = document.getElementById('cart-count');
@@ -44,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     total += item.price * item.quantity;
                 });
             }
-            cartTotalAmountSpan.textContent = '₹ ' + total.toFixed(2); // Fixed currency symbol
+            cartTotalAmountSpan.textContent = '₹ ' + total.toFixed(2);
         }
 
         if (cartCountSpan) {
@@ -104,11 +126,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Contact Form submission logic (now always targets the footer form)
+    // Contact Form submission logic
     const contactForm = document.getElementById('contact-form');
     const formMessage = document.getElementById('form-message');
 
-    if (contactForm) { // Listener for the form (now in footer)
+    if (contactForm) {
         contactForm.addEventListener('submit', (event) => {
             event.preventDefault();
 
@@ -123,7 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             formMessage.textContent = 'Thank you for your message! We will get back to you shortly.';
             formMessage.style.display = 'block';
-            formMessage.style.color = '#28a745'; // Ensure green color
+            formMessage.style.color = '#28a745';
 
             contactForm.reset();
 
@@ -134,25 +156,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Smooth scrolling for navigation links
-    // Modified to target the new #footer-contact-form ID for the "Connect" link
     document.querySelectorAll('nav a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
             const targetId = this.getAttribute('href');
-            // If the target is a section on the main page, scroll to it
-            // If the target is the footer form, scroll to the footer section containing it
             if (targetId === '#products' || targetId === '#about') {
                 document.querySelector(targetId).scrollIntoView({
                     behavior: 'smooth'
                 });
             } else if (targetId === '#footer-contact-form') {
-                 document.querySelector('.footer-section.contact-info').scrollIntoView({ // Scroll to the contact-info footer section
+                document.querySelector('.footer-section.contact-info').scrollIntoView({
                     behavior: 'smooth'
                 });
             }
         });
     });
-
 
     // Lazy Loading for Images and Videos
     const lazyImages = document.querySelectorAll('img.lazyload');
@@ -192,7 +210,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     lazyImages.forEach(lazyLoad);
     lazyVideos.forEach(lazyLoadVideo);
-
 
     // Initial cart display when the page loads
     updateCartDisplay();
